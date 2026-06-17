@@ -1,5 +1,6 @@
 package com.modart00.fitness_coaching_system.entity;
 
+import com.modart00.fitness_coaching_system.entity.enums.Role;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -19,12 +20,15 @@ public class User {
     private double weight;
     private double height;
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     @ManyToOne
     private Coach coach;
 
-    @OneToMany
+    @OneToMany(mappedBy = "user")
     private List<WorkoutPlan> workoutPlans;
 
-    @OneToMany
+    @OneToMany(mappedBy = "user")
     private List<Progress> progresses;
 }

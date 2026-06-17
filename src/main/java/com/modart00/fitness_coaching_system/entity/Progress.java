@@ -6,7 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Data;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Data
 @Entity
@@ -17,7 +17,5 @@ public class Progress {
 
     private double currentWeight;
 
-    private String date;
-
-    private Date createdAt;
+    private LocalDate createdAt;
 }
