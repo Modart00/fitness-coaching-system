@@ -1,12 +1,22 @@
 package com.modart00.fitness_coaching_system.dto.request;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
 @Data
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class LoginRequest {
 
-    private String email,password;
+    @NotBlank
+    @Email
+    private String email;
+
+    @NotBlank
+    private String password;
 
 }

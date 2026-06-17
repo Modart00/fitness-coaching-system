@@ -3,6 +3,8 @@ package com.modart00.fitness_coaching_system.entity;
 import com.modart00.fitness_coaching_system.entity.enums.Role;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -24,11 +26,17 @@ public class User {
     private Role role;
 
     @ManyToOne
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Coach coach;
 
     @OneToMany(mappedBy = "user")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<WorkoutPlan> workoutPlans;
 
     @OneToMany(mappedBy = "user")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<Progress> progresses;
 }

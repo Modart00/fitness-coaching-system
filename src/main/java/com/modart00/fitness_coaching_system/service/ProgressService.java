@@ -29,8 +29,9 @@ public class ProgressService {
         );
     }
 
-    public ProgressResponse save(ProgressRequest request, Authentication authentication) {
-        User user = (User) authentication.getPrincipal();
+    public ProgressResponse saveForUser(Long userId, ProgressRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
         Progress progress = new Progress();
         progress.setCurrentWeight(request.getCurrentWeight());
@@ -50,28 +51,16 @@ public class ProgressService {
                 .toList();
     }
 
-    public ProgressResponse findById(Long id, Authentication authentication) {
-        User user = (User) authentication.getPrincipal();
-
-        Progress progress = progressRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Progress not found"));
-
-        if (!progress.getUser().getId().equals(user.getId())) {
-            throw new RuntimeException("You are not allowed to access this progress");
-        }
-
-        return toResponse(progress);
+    public List<ProgressResponse> getAll() {
+        return progressRepository.findAll()
+                .stream()
+                .map(this::toResponse)
+                .toList();
     }
 
-    public ProgressResponse update(Long id, ProgressRequest request, Authentication authentication) {
-        User user = (User) authentication.getPrincipal();
-
+    public ProgressResponse update(Long id, ProgressRequest request) {
         Progress progress = progressRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Progress not found"));
-
-        if (!progress.getUser().getId().equals(user.getId())) {
-            throw new RuntimeException("You are not allowed to update this progress");
-        }
 
         progress.setCurrentWeight(request.getCurrentWeight());
         progress.setNote(request.getNote());
@@ -79,16 +68,11 @@ public class ProgressService {
         return toResponse(progressRepository.save(progress));
     }
 
-    public void deleteById(Long id, Authentication authentication) {
-        User user = (User) authentication.getPrincipal();
-
-        Progress progress = progressRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Progress not found"));
-
-        if (!progress.getUser().getId().equals(user.getId())) {
-            throw new RuntimeException("You are not allowed to delete this progress");
+    public void deleteById(Long id) {
+        if (!progressRepository.existsById(id)) {
+            throw new RuntimeException("Progress not found");
         }
 
-        progressRepository.delete(progress);
+        progressRepository.deleteById(id);
     }
 }

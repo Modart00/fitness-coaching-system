@@ -2,9 +2,14 @@ package com.modart00.fitness_coaching_system.service;
 
 import com.modart00.fitness_coaching_system.dto.request.WorkoutPlanRequest;
 import com.modart00.fitness_coaching_system.dto.response.WorkoutPlanResponse;
+import com.modart00.fitness_coaching_system.entity.Exercise;
+import com.modart00.fitness_coaching_system.entity.User;
 import com.modart00.fitness_coaching_system.entity.WorkoutPlan;
+import com.modart00.fitness_coaching_system.repository.ExerciseRepository;
+import com.modart00.fitness_coaching_system.repository.UserRepository;
 import com.modart00.fitness_coaching_system.repository.WorkoutPlanRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,28 +19,40 @@ import java.util.List;
 public class WorkoutPlanService {
 
     private final WorkoutPlanRepository workoutPlanRepository;
+    private final UserRepository userRepository;
+    private final ExerciseRepository exerciseRepository;
 
     public WorkoutPlanResponse toResponse(WorkoutPlan workoutPlan){
         return new WorkoutPlanResponse(workoutPlan.getTitle(), workoutPlan.getDescription(), workoutPlan.getDurationWeek(), workoutPlan.getExercises());
     }
 
-    public WorkoutPlanResponse save(WorkoutPlanRequest request){
-       WorkoutPlan workoutPlan = new WorkoutPlan();
+    public WorkoutPlanResponse saveForUser(Long userId, WorkoutPlanRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-       workoutPlan.setTitle(request.getTitle());
-       workoutPlan.setDescription(request.getDescription());
-       workoutPlan.setDurationWeek(request.getDurationWeek());
-       workoutPlan.setExercises(request.getExercises());
+        WorkoutPlan workoutPlan = new WorkoutPlan();
 
-       WorkoutPlan savedPlan = workoutPlanRepository.save(workoutPlan);
+        workoutPlan.setTitle(request.getTitle());
+        workoutPlan.setDescription(request.getDescription());
+        workoutPlan.setDurationWeek(request.getDurationWeek());
+        List<Exercise> exercises = exerciseRepository.findAllById(request.getExerciseIds());
+        workoutPlan.setExercises(exercises);
+        workoutPlan.setUser(user);
 
-       return toResponse(savedPlan);
+        return toResponse(workoutPlanRepository.save(workoutPlan));
+    }
+
+    public List<WorkoutPlanResponse> getMyPlans(Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+
+        return workoutPlanRepository.findByUser(user)
+                .stream()
+                .map(this::toResponse)
+                .toList();
     }
 
     public List<WorkoutPlanResponse> getAll(){
-
         return workoutPlanRepository.findAll().stream().map(this::toResponse).toList();
-
     }
 
     public WorkoutPlanResponse findById(Long id){
@@ -60,8 +77,8 @@ public class WorkoutPlanService {
         workoutPlan.setTitle(request.getTitle());
         workoutPlan.setDescription(request.getDescription());
         workoutPlan.setDurationWeek(request.getDurationWeek());
-        workoutPlan.setExercises(request.getExercises());
-
+        List<Exercise> exercises = exerciseRepository.findAllById(request.getExerciseIds());
+        workoutPlan.setExercises(exercises);
         workoutPlanRepository.save(workoutPlan);
 
         return toResponse(workoutPlan);

@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -46,6 +47,16 @@ public class UserService {
 
     public UserResponse updateMe(UserUpdateRequest request, Authentication authentication) {
         User user = (User) authentication.getPrincipal();
+
+        if (!Objects.equals(user.getEmail(), request.getEmail())
+                && userRepository.existsByEmail(request.getEmail())) {
+            throw new RuntimeException("Email already exists");
+        }
+
+        if (!Objects.equals(user.getUserName(), request.getUserName())
+                && userRepository.existsByUserName(request.getUserName())) {
+            throw new RuntimeException("Username already exists");
+        }
 
         user.setUserName(request.getUserName());
         user.setEmail(request.getEmail());
