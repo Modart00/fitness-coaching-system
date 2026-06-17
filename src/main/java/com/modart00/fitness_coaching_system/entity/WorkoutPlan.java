@@ -20,4 +20,8 @@ public class WorkoutPlan {
 
     @OneToMany
     private List<Exercise> exercises;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }
