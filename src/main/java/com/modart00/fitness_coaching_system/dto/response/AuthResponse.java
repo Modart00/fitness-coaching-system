@@ -1,8 +1,7 @@
-package com.modart00.fitness_coaching_system.dto;
+package com.modart00.fitness_coaching_system.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 
 @Data
 @AllArgsConstructor

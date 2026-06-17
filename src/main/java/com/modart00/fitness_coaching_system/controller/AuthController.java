@@ -1,8 +1,8 @@
 package com.modart00.fitness_coaching_system.controller;
 
-import com.modart00.fitness_coaching_system.dto.AuthResponse;
-import com.modart00.fitness_coaching_system.dto.LoginRequest;
-import com.modart00.fitness_coaching_system.dto.RegisterRequest;
+import com.modart00.fitness_coaching_system.dto.response.AuthResponse;
+import com.modart00.fitness_coaching_system.dto.request.LoginRequest;
+import com.modart00.fitness_coaching_system.dto.request.RegisterRequest;
 import com.modart00.fitness_coaching_system.service.AuthService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;

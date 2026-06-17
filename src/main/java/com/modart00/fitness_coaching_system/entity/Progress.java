@@ -12,6 +12,8 @@ public class Progress {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String note;
+
     private double currentWeight;
 
     private LocalDate createdAt;

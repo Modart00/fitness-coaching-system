@@ -1,4 +1,4 @@
-package com.modart00.fitness_coaching_system.dto;
+package com.modart00.fitness_coaching_system.dto.request;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
