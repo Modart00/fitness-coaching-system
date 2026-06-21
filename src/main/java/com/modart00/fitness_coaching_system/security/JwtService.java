@@ -6,6 +6,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -16,10 +17,11 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class JwtService{
 
-    private final String SECRET_KEY = "bW9kYXJ0MDBtb2RhcnQwMG1vZGFydDAwbW9kYXJ0MDBtb2RhcnQwMA==";
+    @Value("${JWT_SECRET}")
+    private final String secretKey;
 
     private SecretKey getSigningKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
@@ -29,7 +31,7 @@ public class JwtService{
         return Jwts.builder()
                 .subject(user
                         .getEmail()).issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 15))
                 .signWith(secretKey)
                 .compact();
 

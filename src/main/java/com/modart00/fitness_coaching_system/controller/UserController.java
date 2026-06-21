@@ -6,6 +6,8 @@ import com.modart00.fitness_coaching_system.entity.User;
 import com.modart00.fitness_coaching_system.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +25,13 @@ public class UserController {
     @GetMapping("/me")
     public UserResponse getMe(Authentication authentication){
         return userService.getMe(authentication);
+    }
+
+    @GetMapping("/getAll")
+    @PreAuthorize("hasRole('ADMIN')")
+    public Page<UserResponse> getAllUsers(@RequestParam(defaultValue = "0") int page
+                                          ,@RequestParam(defaultValue = "10") int size){
+        return userService.getAll(page, size);
     }
 
 

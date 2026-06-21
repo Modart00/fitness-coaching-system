@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -21,6 +23,8 @@ public class User {
     private int age;
     private double weight;
     private double height;
+    private String refreshToken;
+    private LocalDateTime refreshTokenExpiryDate;
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -39,4 +43,9 @@ public class User {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<Progress> progresses;
+
+    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
+    private VerificationToken token;
+
+    private boolean enabled;
 }

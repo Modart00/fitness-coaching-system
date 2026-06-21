@@ -5,6 +5,10 @@ import com.modart00.fitness_coaching_system.dto.request.UserUpdateRequest;
 import com.modart00.fitness_coaching_system.entity.User;
 import com.modart00.fitness_coaching_system.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.engine.jdbc.Size;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -31,11 +35,10 @@ public class UserService {
         return toResponse(user);
     }
 
-    public List<UserResponse> getAll() {
-        return userRepository.findAll()
-                .stream()
-                .map(this::toResponse)
-                .toList();
+    public Page<UserResponse> getAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page,size);
+        Page<User> users = userRepository.findAll(pageable);
+        return users.map(this::toResponse);
     }
 
     public UserResponse findById(Long id) {

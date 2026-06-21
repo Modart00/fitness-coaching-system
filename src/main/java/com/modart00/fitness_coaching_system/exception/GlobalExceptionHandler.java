@@ -50,4 +50,13 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.internalServerError().body(error);
     }
+
+    @ExceptionHandler(AccountNotVerifiedException.class)
+    public ResponseEntity<Map<String, String>> handleAccountVerificationErrors(AccountNotVerifiedException ex) {
+        Map<String,String> error = new HashMap<>();
+
+        error.put("message", ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+    }
 }
